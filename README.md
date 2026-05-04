@@ -30,7 +30,7 @@ The app features a modern dark-themed chat interface inspired by premium AI appl
 
 # 📸 Screenshot
 
-![Summit Intelligence](https://i.imgur.com/gTtY7oa.png)enshot | Screenshot |
+![Summit Intelligence](https://i.imgur.com/gTtY7oa.png)
 
 ---
 
