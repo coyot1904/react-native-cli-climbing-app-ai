@@ -1,97 +1,260 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 🏔️ Summit Intelligence AI
 
-# Getting Started
+An intelligent climbing assistant built with React Native and powered by Google Gemini AI.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Summit Intelligence helps climbers with:
 
-## Step 1: Start Metro
+- 🧗 Climbing techniques
+- 🪢 Knot tutorials
+- 🌦️ Mountain weather guidance
+- 🏔️ Alpine expedition advice
+- 🎒 Gear recommendations
+- 📍 Climbing destination suggestions
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+The app features a modern dark-themed chat interface inspired by premium AI applications.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
+# ✨ Features
+
+- 🤖 Gemini AI integration
+- 💬 Real-time AI chat
+- 🧠 Multiple AI assistant modes
+- 🏔️ Climbing-focused responses
+- 🖼️ AI image responses
+- 🌙 Modern dark UI
+- ⚡ Fast React Native performance
+- 📱 iOS & Android support
+
+---
+
+# 📸 Screenshot
+
+![Summit Intelligence](https://i.imgur.com/gTtY7oa.png)enshot | Screenshot |
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+Before running the project, make sure you have completed the React Native environment setup:
+
+- Node.js
+- React Native CLI
+- Android Studio
+- Xcode (macOS only)
+- CocoaPods
+
+Official guide:
+
+https://reactnative.dev/docs/environment-setup
+
+---
+
+# 📦 Installation
+
+Clone the repository:
+
+```bash
+git clone YOUR_REPOSITORY_URL
+```
+
+Navigate into the project:
+
+```bash
+cd summit-intelligence-ai
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+OR
+
+```bash
+yarn install
+```
+
+---
+
+# 🔑 Gemini API Setup
+
+This project uses Google Gemini AI.
+
+Create a Gemini API key from:
+
+https://aistudio.google.com/
+
+Then update your API key inside:
+
+```bash
+/service/index.ts
+```
+
+Example:
+
+```ts
+const ai = new GoogleGenAI({
+  apiKey: 'YOUR_GEMINI_API_KEY',
+});
+```
+
+---
+
+# ▶️ Running the App
+
+## Start Metro
+
+```bash
 npm start
+```
 
-# OR using Yarn
+OR
+
+```bash
 yarn start
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+# 🤖 Android
 
-### Android
-
-```sh
-# Using npm
+```bash
 npm run android
+```
 
-# OR using Yarn
+OR
+
+```bash
 yarn android
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+# 🍎 iOS
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Install pods:
 
-```sh
+```bash
 bundle install
 ```
 
-Then, and every time you update your native dependencies, run:
-
-```sh
+```bash
 bundle exec pod install
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+Run iOS app:
 
-```sh
-# Using npm
+```bash
 npm run ios
+```
 
-# OR using Yarn
+OR
+
+```bash
 yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+# 🛠️ Technologies
 
-## Step 3: Modify your app
+- React Native
+- TypeScript
+- Google Gemini AI
+- react-native-gifted-chat
+- React Hooks
+- React Native CLI
 
-Now that you have successfully run the app, let's make changes!
+---
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+# 📂 Project Structure
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+```bash
+src/
+ ├── components/
+ ├── services/
+ ├── screens/
+ ├── assets/
+ └── utils/
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+Main files:
 
-## Congratulations! :tada:
+```bash
+App.tsx
+service/index.ts
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+---
 
-### Now what?
+# 🎨 UI Highlights
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+- Premium dark mountain theme
+- Custom AI chat bubbles
+- Floating message input
+- Interactive suggestion chips
+- Animated typing state
+- Responsive design
 
-# Troubleshooting
+---
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+# 🔮 Future Improvements
 
-# Learn More
+- 🎤 Voice assistant
+- 📍 Nearby climbing spots
+- 🌦️ Real-time mountain weather
+- 🧗 Route difficulty analysis
+- 🗺️ Offline climbing maps
+- 🧠 Streaming AI responses
+- 📸 Camera rock recognition
 
-To learn more about React Native, take a look at the following resources:
+---
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+# 🧪 Troubleshooting
+
+If Metro cache causes issues:
+
+```bash
+npm start --reset-cache
+```
+
+For iOS pod issues:
+
+```bash
+cd ios && pod install
+```
+
+For Android clean build:
+
+```bash
+cd android && ./gradlew clean
+```
+
+---
+
+# 📚 Learn More
+
+- React Native  
+  https://reactnative.dev
+
+- Google Gemini AI  
+  https://ai.google.dev
+
+- React Native Gifted Chat  
+  https://github.com/FaridSafi/react-native-gifted-chat
+
+---
+
+# 📄 License
+
+MIT License
+
+---
+
+# 👨‍💻 Author
+
+Built with React Native and Gemini AI by Keyvan.
