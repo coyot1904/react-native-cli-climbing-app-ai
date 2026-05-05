@@ -34,6 +34,7 @@ The app features a modern dark-themed chat interface inspired by premium AI appl
   <tr>
     <td><img src="https://i.imgur.com/gTtY7oa.png" width="300"/></td>
     <td><img src="https://i.imgur.com/GwZL8lO.png" width="300"/></td>
+    <td><img src="https://i.imgur.com/zpI6gEn.png" width="300"/></td>
   </tr>
 </table>
 
