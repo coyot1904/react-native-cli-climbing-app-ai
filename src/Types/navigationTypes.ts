@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   ChatScreen: undefined;
   MapScreen: undefined;
+  TrackScreen: { mountain: any };
 };
 
 export type ChatScreenProps = {
@@ -9,4 +10,9 @@ export type ChatScreenProps = {
 
 export type MapScreenProps = {
   navigation: any;
+};
+
+export type TrackScreenProps = {
+  navigation: any;
+  route: { params: { mountain: any } };
 };

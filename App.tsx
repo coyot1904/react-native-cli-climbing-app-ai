@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import ChatScreenPage from './src/Screens/Chat';
 import MapScreenPage from './src/Screens/Map';
+import TrackScreenPage from './src/Screens/Track';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
@@ -13,6 +14,7 @@ const App = () => {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Chat" component={ChatScreenPage} />
         <Stack.Screen name="Map" component={MapScreenPage} />
+        <Stack.Screen name="Track" component={TrackScreenPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
