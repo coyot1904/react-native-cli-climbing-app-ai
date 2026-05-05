@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       in: window,
       launchOptions: launchOptions
     )
-    GMSServices.provideAPIKey("AIzaSyC-SyccT5H62grSSHnmFMJowQDGB_jaMAM")
+    GMSServices.provideAPIKey("YOUR_GOOGLE_MAPS_API_KEY")
     return true
   }
 }
