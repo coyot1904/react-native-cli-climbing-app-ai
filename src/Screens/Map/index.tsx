@@ -74,8 +74,12 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation }) => {
             <TouchableOpacity
               style={styles.chatButtonTrack}
               onPress={() => {
-                if (selectedMountain && selectedMountain.track) {
-                  navigation.navigate('Track', { mountain: selectedMountain });
+                if (selectedMountain) {
+                  console.log(
+                    'Navigating to Track with mountain:',
+                    selectedMountain,
+                  );
+                  navigation.navigate('Track', { trail: selectedMountain });
                 } else {
                   Alert.alert('Track data not available for this peak yet.');
                 }

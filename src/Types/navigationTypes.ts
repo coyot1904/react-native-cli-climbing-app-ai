@@ -14,5 +14,5 @@ export type MapScreenProps = {
 
 export type TrackScreenProps = {
   navigation: any;
-  route: { params: { mountain: any } };
+  route: { params: { trail: any } };
 };

@@ -1,147 +1,375 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
-  StyleSheet,
   Text,
+  ScrollView,
   TouchableOpacity,
-  Platform,
+  StyleSheet,
+  StatusBar,
+  Alert,
   Animated,
 } from 'react-native';
-import MapView, { Polyline, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { MapType } from 'react-native-maps';
+import LinearGradient from 'react-native-linear-gradient';
+import { TrackMap } from '../../Components/TrackMap';
+import { ElevationProfile } from '../../Components/ElevationProfile';
+import { StatRow } from '../../Components/StatCard';
+import { WaypointItem } from '../../Components/WaypointItem';
+import { useTracking, formatDuration } from '../../Hooks/useTracking';
+import { Waypoint } from '../../Types/trackTypes';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  Colors,
+  Typography,
+  Spacing,
+  Radius,
+  Shadow,
+} from '../../Assets/theme';
 import { TrackScreenProps } from '../../Types/navigationTypes';
-import LinearGradient from 'react-native-linear-gradient'; // Add this package
+
+const DIFFICULTY_COLORS = {
+  easy: { bg: Colors.primaryBg, text: Colors.primary },
+  moderate: { bg: '#FFF8E0', text: '#B68A00' },
+  hard: { bg: Colors.accentBg, text: Colors.accent },
+  expert: { bg: '#F5E6F6', text: '#7B3FA0' },
+};
+
+const DIFFICULTY_LABELS = {
+  easy: 'Easy',
+  moderate: 'Moderate',
+  hard: 'Hard',
+  expert: 'Expert',
+};
 
 const TrackScreen: React.FC<TrackScreenProps> = ({ navigation, route }) => {
-  const { mountain } = route.params;
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  const { trail } = route.params;
+  const insets = useSafeAreaInsets();
+  //const trail = ZIGANA_PEAK_TRACK;
+  const [mapType, setMapType] = useState<MapType>('terrain');
+  const [isSaved, setIsSaved] = useState(false);
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 5,
-        useNativeDriver: true,
-      }),
-    ]).start();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const {
+    session,
+    isActive,
+    startTracking,
+    pauseTracking,
+    resumeTracking,
+    stopTracking,
+  } = useTracking(trail.id);
 
-  const trackCoords = mountain.track || [];
-  const summitCoord = {
-    latitude: mountain.latitude,
-    longitude: mountain.longitude,
+  const progressRatio =
+    trail.distance > 0 ? session.distanceCovered / trail.distance : 0;
+
+  const nextWaypoint = useMemo(() => {
+    return trail.waypoints.find(
+      wp => wp.distanceFromStart > session.distanceCovered,
+    );
+  }, [trail.waypoints, session.distanceCovered]);
+
+  const handleStartStop = () => {
+    if (!isActive) {
+      startTracking();
+    } else {
+      Alert.alert('End tracking?', 'Your route will be saved.', [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'End',
+          style: 'destructive',
+          onPress: stopTracking,
+        },
+      ]);
+    }
   };
-  const bcCoord = mountain.baseCamp || trackCoords[0];
+
+  const toggleMapType = () => {
+    setMapType(prev =>
+      prev === 'terrain'
+        ? 'satellite'
+        : prev === 'satellite'
+        ? 'standard'
+        : 'terrain',
+    );
+  };
+
+  const diffCfg =
+    DIFFICULTY_COLORS[trail.difficulty as keyof typeof DIFFICULTY_COLORS];
+
+  const liveStats = [
+    {
+      label: 'Distance',
+      value: session.distanceCovered.toFixed(2),
+      unit: 'km',
+    },
+    {
+      label: 'Elevation',
+      value:
+        session.currentElevation > 0
+          ? session.currentElevation.toFixed(0)
+          : trail.minElevation.toFixed(0),
+      unit: 'm',
+    },
+    { label: 'Duration', value: formatDuration(session.elapsedSeconds) },
+    { label: 'Speed', value: session.avgSpeed.toFixed(1), unit: 'km/h' },
+  ];
+
+  const trailStats = [
+    { label: 'Distance', value: trail.distance.toString(), unit: 'km' },
+    { label: 'Ascent', value: trail.elevationGain.toLocaleString(), unit: 'm' },
+    {
+      label: 'Est. time',
+      value: `${Math.floor(trail.estimatedDuration / 60)}h ${
+        trail.estimatedDuration % 60
+      }m`,
+    },
+    {
+      label: 'Max alt.',
+      value: trail.maxElevation.toLocaleString(),
+      unit: 'm',
+    },
+  ];
 
   return (
-    <View style={styles.container}>
-      <MapView
-        provider={PROVIDER_GOOGLE}
-        style={styles.map}
-        mapType="terrain"
-        initialRegion={{
-          latitude: mountain.latitude,
-          longitude: mountain.longitude,
-          latitudeDelta: 0.1, // Slightly tighter zoom for "better" look
-          longitudeDelta: 0.1,
-        }}
-        customMapStyle={mapDarkStyle}
+    <View
+      style={[
+        styles.safe,
+        { paddingTop: insets.top, paddingBottom: insets.bottom },
+      ]}
+    >
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
+      <TouchableOpacity
+        style={styles.floatingBackButton}
+        onPress={() => navigation.goBack()}
+        activeOpacity={0.7}
       >
-        {/* Glow effect for Polyline (Double Layer) */}
-        <Polyline
-          coordinates={trackCoords}
-          strokeColor="rgba(144, 238, 144, 0.3)"
-          strokeWidth={10}
-        />
-        <Polyline
-          coordinates={trackCoords}
-          strokeColor="#90EE90"
-          strokeWidth={4}
-          lineDashPattern={[8, 12]}
-          geodesic={true}
-          zIndex={10}
-        />
-
-        {/* Base Camp Marker */}
-        {bcCoord && (
-          <Marker coordinate={bcCoord}>
-            <Animated.View
-              style={{ opacity: fadeAnim, transform: [{ scale: scaleAnim }] }}
-            >
-              <View
-                style={[styles.markerContainer, { borderColor: '#FF8A3D' }]}
-              >
-                <Text style={styles.markerEmoji}>⛺</Text>
-                <View style={styles.textContainer}>
-                  <Text style={styles.markerTitle}>Base Camp</Text>
-                  <Text style={styles.markerSub}>
-                    {mountain.baseCamp?.altitude}
-                  </Text>
-                </View>
+        <Text style={styles.backButtonIcon}>←</Text>
+      </TouchableOpacity>
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* ── Header ── */}
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Text style={styles.trailName}>{trail.name}</Text>
+            <View style={styles.locationRow}>
+              <Text style={styles.locationIcon}>📍</Text>
+              <Text style={styles.location}>
+                {trail.region}, {trail.country}
+              </Text>
+            </View>
+            <View style={styles.metaRow}>
+              <View style={[styles.diffBadge, { backgroundColor: diffCfg.bg }]}>
+                <Text style={[styles.diffText, { color: diffCfg.text }]}>
+                  {DIFFICULTY_LABELS[trail.difficulty]}
+                </Text>
               </View>
-              <View style={[styles.arrow, { borderTopColor: '#FF8A3D' }]} />
-            </Animated.View>
-          </Marker>
-        )}
-
-        {/* Summit Marker */}
-        <Marker coordinate={summitCoord}>
-          <Animated.View
-            style={{ opacity: fadeAnim, transform: [{ scale: scaleAnim }] }}
-          >
-            <View
-              style={[
-                styles.markerContainer,
-                { borderColor: '#A5F3FC', elevation: 10 },
-              ]}
-            >
-              <Text style={styles.markerEmoji}>🚩</Text>
-              <View style={styles.textContainer}>
-                <Text style={styles.markerTitle}>{mountain.name} Summit</Text>
-                <Text style={styles.markerSub}>{mountain.altitude}m</Text>
+              <View style={styles.typeBadge}>
+                <Text style={styles.typeText}>
+                  {trail.trailType.replace('-', ' ')}
+                </Text>
               </View>
             </View>
-            <View style={[styles.arrow, { borderTopColor: '#A5F3FC' }]} />
-          </Animated.View>
-        </Marker>
-      </MapView>
-
-      {/* Top Gradient Overlay for readability */}
-      <LinearGradient
-        colors={['rgba(11, 18, 32, 0.8)', 'transparent']}
-        style={styles.topGradient}
-      />
-
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.backText}>⬅ Back to Map</Text>
-      </TouchableOpacity>
-
-      {/* Bottom Floating Info Card */}
-      <Animated.View style={[styles.infoCard, { opacity: fadeAnim }]}>
-        <View style={styles.pill} />
-        <Text style={styles.routeTitle}>{mountain.name}</Text>
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>Altitude</Text>
-            <Text style={styles.statValue}>{mountain.altitude}m</Text>
           </View>
-          <View style={styles.divider} />
-          <View style={styles.statBox}>
-            <Text style={styles.statLabel}>Region</Text>
-            <Text style={styles.statValue}>{mountain.region}</Text>
+
+          <View style={styles.headerRight}>
+            <View style={styles.ratingWrap}>
+              <Text style={styles.ratingNum}>{trail.rating}</Text>
+              <Text style={styles.ratingStar}>★</Text>
+            </View>
+            <Text style={styles.ratingCount}>{trail.reviewCount} reviews</Text>
+            <TouchableOpacity
+              style={[styles.saveBtn, isSaved && styles.saveBtnActive]}
+              onPress={() => setIsSaved(v => !v)}
+            >
+              <Text style={styles.saveBtnIcon}>{isSaved ? '❤️' : '🤍'}</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </Animated.View>
+
+        {/* ── Map ── */}
+        <View style={styles.mapWrap}>
+          <TrackMap
+            coordinates={trail.coordinates}
+            waypoints={trail.waypoints}
+            currentPosition={session.currentPosition}
+            recordedPath={session.recordedPath}
+            mapType={mapType}
+            onMapTypeToggle={toggleMapType}
+          />
+
+          {/* Live badge */}
+          {isActive && (
+            <View style={styles.liveBadge}>
+              <Animated.View style={styles.liveDot} />
+              <Text style={styles.liveText}>LIVE</Text>
+            </View>
+          )}
+
+          {/* Current elevation overlay */}
+          {session.currentElevation > 0 && (
+            <View style={styles.elevBadge}>
+              <Text style={styles.elevBadgeText}>
+                ⛰ {Math.round(session.currentElevation)} m
+              </Text>
+            </View>
+          )}
+        </View>
+
+        {/* ── Live stats (only during tracking) ── */}
+        {isActive && (
+          <View style={styles.liveStatsSection}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Live stats</Text>
+              <View style={styles.livePill}>
+                <View style={styles.liveDotSmall} />
+                <Text style={styles.livePillText}>Recording</Text>
+              </View>
+            </View>
+            <StatRow stats={liveStats} />
+
+            {/* Progress bar */}
+            <View style={styles.progressWrap}>
+              <View style={styles.progressHeader}>
+                <Text style={styles.progressLabel}>
+                  {session.distanceCovered.toFixed(2)} km of {trail.distance} km
+                </Text>
+                <Text style={styles.progressPct}>
+                  {Math.round(progressRatio * 100)}%
+                </Text>
+              </View>
+              <View style={styles.progressTrack}>
+                <View
+                  style={[
+                    styles.progressFill,
+                    { width: `${Math.min(progressRatio * 100, 100)}%` as any },
+                  ]}
+                />
+              </View>
+              {nextWaypoint && (
+                <Text style={styles.nextWpHint}>
+                  Next: {nextWaypoint.name} in{' '}
+                  {(
+                    nextWaypoint.distanceFromStart - session.distanceCovered
+                  ).toFixed(1)}{' '}
+                  km
+                </Text>
+              )}
+            </View>
+          </View>
+        )}
+
+        {/* ── Trail stats ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Trail info</Text>
+        </View>
+        <StatRow stats={trailStats} />
+
+        {/* ── Elevation profile ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Elevation profile</Text>
+          <View style={styles.elevChart}>
+            <ElevationProfile
+              data={trail.elevationProfile}
+              progressRatio={progressRatio}
+              width={340}
+              height={100}
+            />
+          </View>
+          <View style={styles.elevSummary}>
+            <View style={styles.elevItem}>
+              <Text style={styles.elevItemIcon}>↑</Text>
+              <Text style={styles.elevItemVal}>
+                +{trail.elevationGain.toLocaleString()} m
+              </Text>
+              <Text style={styles.elevItemLabel}>Gain</Text>
+            </View>
+            <View style={styles.elevItem}>
+              <Text style={[styles.elevItemIcon, { color: Colors.info }]}>
+                ↓
+              </Text>
+              <Text style={styles.elevItemVal}>
+                -{trail.elevationLoss.toLocaleString()} m
+              </Text>
+              <Text style={styles.elevItemLabel}>Loss</Text>
+            </View>
+            <View style={styles.elevItem}>
+              <Text style={[styles.elevItemIcon, { color: Colors.accent }]}>
+                ▲
+              </Text>
+              <Text style={styles.elevItemVal}>
+                {trail.maxElevation.toLocaleString()} m
+              </Text>
+              <Text style={styles.elevItemLabel}>Max</Text>
+            </View>
+            <View style={styles.elevItem}>
+              <Text style={[styles.elevItemIcon, { color: Colors.gray500 }]}>
+                ▼
+              </Text>
+              <Text style={styles.elevItemVal}>
+                {trail.minElevation.toLocaleString()} m
+              </Text>
+              <Text style={styles.elevItemLabel}>Min</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ── Waypoints ── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Waypoints</Text>
+          <View style={styles.waypointList}>
+            {trail.waypoints.map((wp: Waypoint) => (
+              <WaypointItem
+                key={wp.id}
+                waypoint={wp}
+                isReached={session.distanceCovered >= wp.distanceFromStart}
+                isNext={nextWaypoint?.id === wp.id}
+              />
+            ))}
+          </View>
+        </View>
+
+        {/* ── Bottom padding for FAB ── */}
+        <View style={{ height: 100 }} />
+      </ScrollView>
+
+      {/* ── Floating action buttons ── */}
+      <View style={styles.fabArea}>
+        {isActive && (
+          <TouchableOpacity
+            style={styles.fabSecondary}
+            onPress={session.isPaused ? resumeTracking : pauseTracking}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.fabSecondaryText}>
+              {session.isPaused ? '▶ Resume' : '⏸ Pause'}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        <TouchableOpacity
+          style={[styles.fabPrimary, isActive && styles.fabPrimaryStop]}
+          onPress={handleStartStop}
+          activeOpacity={0.88}
+        >
+          <LinearGradient
+            colors={
+              isActive
+                ? [Colors.danger, '#C0392B']
+                : [Colors.primaryLight, Colors.primary]
+            }
+            style={styles.fabGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          >
+            <Text style={styles.fabPrimaryIcon}>{isActive ? '⏹' : '▶'}</Text>
+            <Text style={styles.fabPrimaryText}>
+              {isActive ? 'End tracking' : 'Start tracking'}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -149,134 +377,334 @@ const TrackScreen: React.FC<TrackScreenProps> = ({ navigation, route }) => {
 export default TrackScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    ...StyleSheet.absoluteFill,
-    backgroundColor: '#0B1220',
+  safe: {
+    flex: 1,
+    backgroundColor: Colors.background,
   },
-  map: {
-    ...StyleSheet.absoluteFill,
+  scroll: {
+    flex: 1,
+    paddingTop: Spacing.md,
   },
-  topGradient: {
+  content: {
+    paddingTop: Spacing.md,
+  },
+
+  // Header
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    paddingHorizontal: Spacing.lg,
+    marginBottom: Spacing.md,
+  },
+  headerLeft: { flex: 1, marginRight: Spacing.md },
+  trailName: {
+    fontSize: Typography.xl,
+    fontWeight: Typography.bold,
+    color: Colors.gray900,
+    lineHeight: 28,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 3,
+  },
+  locationIcon: { fontSize: 12 },
+  location: {
+    fontSize: Typography.sm,
+    color: Colors.gray500,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  diffBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
+    borderRadius: Radius.round,
+  },
+  diffText: {
+    fontSize: 11,
+    fontWeight: Typography.semibold,
+  },
+  typeBadge: {
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
+    borderRadius: Radius.round,
+    backgroundColor: Colors.gray50,
+  },
+  typeText: {
+    fontSize: 11,
+    color: Colors.gray700,
+    textTransform: 'capitalize',
+  },
+  headerRight: { alignItems: 'flex-end', gap: 4 },
+  ratingWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  ratingNum: {
+    fontSize: Typography.lg,
+    fontWeight: Typography.bold,
+    color: Colors.gray900,
+  },
+  ratingStar: { fontSize: Typography.md, color: '#E8A020' },
+  ratingCount: { fontSize: 10, color: Colors.gray500 },
+  saveBtn: {
+    marginTop: Spacing.xs,
+    width: 32,
+    height: 32,
+    borderRadius: Radius.round,
+    backgroundColor: Colors.gray50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  saveBtnActive: { backgroundColor: '#FFF0F0' },
+  saveBtnIcon: { fontSize: 16 },
+
+  // Map
+  mapWrap: {
+    marginHorizontal: Spacing.lg,
+    marginBottom: Spacing.lg,
+    position: 'relative',
+  },
+  liveBadge: {
     position: 'absolute',
-    top: 0,
+    top: 12,
+    left: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    borderRadius: Radius.round,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  liveDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: Colors.primaryLight,
+  },
+  liveText: {
+    fontSize: 11,
+    color: Colors.white,
+    fontWeight: Typography.bold,
+    letterSpacing: 1,
+  },
+  elevBadge: {
+    position: 'absolute',
+    bottom: 12,
+    left: 12,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    borderRadius: Radius.round,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  elevBadgeText: {
+    fontSize: 11,
+    color: Colors.white,
+    fontWeight: Typography.medium,
+  },
+
+  // Live stats
+  liveStatsSection: {
+    marginBottom: Spacing.lg,
+    backgroundColor: Colors.surface,
+    ...Shadow.sm,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    borderBottomWidth: 0.5,
+    borderColor: Colors.gray100,
+  },
+  livePill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: Colors.primaryBg,
+    borderRadius: Radius.round,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 3,
+  },
+  liveDotSmall: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: Colors.primary,
+  },
+  livePillText: {
+    fontSize: 10,
+    color: Colors.primary,
+    fontWeight: Typography.semibold,
+  },
+
+  progressWrap: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+  },
+  progressHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.sm,
+  },
+  progressLabel: { fontSize: Typography.sm, color: Colors.gray500 },
+  progressPct: {
+    fontSize: Typography.sm,
+    fontWeight: Typography.semibold,
+    color: Colors.primary,
+  },
+  progressTrack: {
+    height: 6,
+    backgroundColor: Colors.gray100,
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: Colors.primary,
+    borderRadius: 3,
+  },
+  nextWpHint: {
+    marginTop: Spacing.sm,
+    fontSize: 11,
+    color: Colors.gray500,
+  },
+
+  // Sections
+  section: {
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.sm,
+  },
+  sectionTitle: {
+    fontSize: 11,
+    fontWeight: Typography.semibold,
+    color: Colors.gray500,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    marginBottom: Spacing.sm,
+  },
+
+  // Elevation chart
+  elevChart: {
+    alignItems: 'center',
+    marginHorizontal: -Spacing.xs,
+  },
+  elevSummary: {
+    flexDirection: 'row',
+    marginTop: Spacing.md,
+    gap: Spacing.xs,
+  },
+  elevItem: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: Radius.sm,
+    paddingVertical: Spacing.sm,
+  },
+  elevItemIcon: {
+    fontSize: Typography.md,
+    color: Colors.primary,
+    fontWeight: Typography.bold,
+  },
+  elevItemVal: {
+    fontSize: Typography.sm,
+    fontWeight: Typography.semibold,
+    color: Colors.gray900,
+  },
+  elevItemLabel: {
+    fontSize: 10,
+    color: Colors.gray500,
+    marginTop: 1,
+  },
+
+  // Waypoints
+  waypointList: {
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.lg,
+    paddingHorizontal: Spacing.md,
+    ...Shadow.sm,
+  },
+
+  // FAB
+  fabArea: {
+    position: 'absolute',
+    bottom: 0,
     left: 0,
     right: 0,
-    height: 150,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
+    paddingTop: Spacing.md,
+    backgroundColor: Colors.background,
+    borderTopWidth: 0.5,
+    borderColor: Colors.gray100,
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    alignItems: 'center',
   },
-  backButton: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 30,
-    left: 20,
-    backgroundColor: 'rgba(26, 36, 54, 0.9)',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+  fabPrimary: {
+    flex: 1,
+    borderRadius: Radius.lg,
+    overflow: 'hidden',
+    ...Shadow.md,
+    marginBottom: 10,
+  },
+  fabPrimaryStop: {},
+  fabGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    justifyContent: 'center',
+    height: 58,
+    marginBottom: 10,
   },
-  backText: {
-    color: '#FFF',
-    fontWeight: '700',
-    fontSize: 14,
+  fabPrimaryIcon: { fontSize: Typography.md, color: Colors.white },
+  fabPrimaryText: {
+    fontSize: Typography.base,
+    fontWeight: Typography.semibold,
+    color: Colors.white,
   },
-  infoCard: {
-    position: 'absolute',
-    bottom: 30,
-    left: 20,
-    right: 20,
-    backgroundColor: 'rgba(26, 36, 54, 0.95)',
-    borderRadius: 24,
-    padding: 20,
+  fabSecondary: {
+    borderRadius: Radius.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    alignItems: 'center',
+    borderColor: Colors.gray300,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    backgroundColor: Colors.surface,
+    ...Shadow.sm,
   },
-  pill: {
+  fabSecondaryText: {
+    fontSize: Typography.base,
+    fontWeight: Typography.medium,
+    color: Colors.gray700,
+  },
+  floatingBackButton: {
+    position: 'absolute',
+    top: 40, // Adjust based on your theme Spacing
+    left: Spacing.lg,
+    zIndex: 100, // Ensure it stays above the Map and Header
     width: 40,
-    height: 4,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 2,
-    marginBottom: 15,
+    height: 40,
+    borderRadius: Radius.round,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Slight transparency
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.gray100,
+    ...Shadow.sm, // Using your theme's shadow
   },
-  routeTitle: {
-    color: '#FFFFFF',
+  backButtonIcon: {
     fontSize: 22,
-    fontWeight: '800',
-    letterSpacing: 0.5,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    marginTop: 20,
-    width: '100%',
-    justifyContent: 'space-around',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.05)',
-    paddingTop: 15,
-  },
-  statBox: {
-    alignItems: 'center',
-  },
-  statLabel: {
-    color: '#94A3B8',
-    fontSize: 12,
-    textTransform: 'uppercase',
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  statValue: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  divider: {
-    width: 1,
-    height: '100%',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  // MARKER STYLES
-  markerContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#1A2436',
-    borderRadius: 12,
-    borderWidth: 2,
-    padding: 8,
-    alignItems: 'center',
-  },
-  textContainer: {
-    marginLeft: 8,
-  },
-  markerTitle: {
-    color: '#FFFFFF',
+    color: Colors.gray900,
     fontWeight: 'bold',
-    fontSize: 14,
-  },
-  markerSub: {
-    color: '#94A3B8',
-    fontSize: 12,
-  },
-  markerEmoji: {
-    fontSize: 24,
-  },
-  arrow: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-    borderWidth: 6,
-    alignSelf: 'center',
+    // Fine-tune position if the arrow isn't centered
     marginTop: -2,
   },
 });
-
-const mapDarkStyle = [
-  { elementType: 'geometry', stylers: [{ color: '#0B1220' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ visibility: 'off' }] },
-  {
-    featureType: 'landscape',
-    elementType: 'geometry',
-    stylers: [{ color: '#111827' }],
-  },
-];

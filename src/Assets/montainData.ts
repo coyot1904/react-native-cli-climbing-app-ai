@@ -1,303 +1,552 @@
-export const mountains = [
-  // ======================
-  // 🌍 8000m Peaks (14)
-  // ======================
+import { TrailTrack } from '../Types/trackTypes';
+
+export const mountains: TrailTrack[] = [
   {
+    id: 'everest-8848',
     name: 'Everest',
+    region: 'Himalayas',
+    country: 'Nepal/China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 20.5,
+    elevationGain: 3484,
+    elevationLoss: 3484,
+    maxElevation: 8848,
+    minElevation: 5364,
+    estimatedDuration: 14400,
+    rating: 5.0,
+    reviewCount: 2450,
     latitude: 27.9881,
     longitude: 86.925,
     altitude: 8848,
-    region: 'Himalayas',
-    country: 'Nepal/China',
     description: 'Highest mountain in the world (8,848m).',
-    track: [
-      { latitude: 28.0072, longitude: 86.8594 }, // Base Camp
-      { latitude: 27.9995, longitude: 86.8612 }, // Khumbu Icefall
-      { latitude: 27.9865, longitude: 86.8745 }, // Camp 1
-      { latitude: 27.978, longitude: 86.892 }, // Camp 2
-      { latitude: 27.973, longitude: 86.915 }, // Camp 3
-      { latitude: 27.9805, longitude: 86.9215 }, // South Col
-      { latitude: 27.9881, longitude: 86.925 }, // Summit
+    coordinates: [
+      { latitude: 28.0072, longitude: 86.8594, altitude: 5364 }, // Base Camp
+      { latitude: 27.9995, longitude: 86.8612, altitude: 6065 }, // Icefall
+      { latitude: 27.9865, longitude: 86.8745, altitude: 6400 }, // Camp 1
+      { latitude: 27.978, longitude: 86.892, altitude: 6750 }, // Camp 2
+      { latitude: 27.973, longitude: 86.915, altitude: 7300 }, // Camp 3
+      { latitude: 27.9805, longitude: 86.9215, altitude: 7906 }, // South Col
+      { latitude: 27.9881, longitude: 86.925, altitude: 8848 }, // Summit
     ],
-    baseCamp: { latitude: 28.0072, longitude: 86.8594, altitude: '5,364m' },
+    waypoints: [
+      {
+        id: 'ev-bc',
+        name: 'Base Camp',
+        type: 'start',
+        coordinate: { latitude: 28.0072, longitude: 86.8594, altitude: 5364 },
+        elevation: 5364,
+        distanceFromStart: 0,
+        description: 'Main expedition hub on the Khumbu Glacier.',
+      },
+      {
+        id: 'ev-c1',
+        name: 'Camp 1',
+        type: 'waypoint',
+        coordinate: { latitude: 27.9865, longitude: 86.8745, altitude: 6065 },
+        elevation: 6065,
+        distanceFromStart: 4.2,
+        description: 'Located above the Khumbu Icefall.',
+      },
+      {
+        id: 'ev-c2',
+        name: 'Camp 2 (ABC)',
+        type: 'waypoint',
+        coordinate: { latitude: 27.978, longitude: 86.892, altitude: 6400 },
+        elevation: 6400,
+        distanceFromStart: 6.5,
+        description: 'Advanced Base Camp in the Western Cwm.',
+      },
+      {
+        id: 'ev-c3',
+        name: 'Camp 3',
+        type: 'waypoint',
+        coordinate: { latitude: 27.973, longitude: 86.915, altitude: 7300 },
+        elevation: 7300,
+        distanceFromStart: 8.2,
+        description: 'Located on the Lhotse Face.',
+      },
+      {
+        id: 'ev-c4',
+        name: 'Camp 4 (South Col)',
+        type: 'waypoint',
+        coordinate: { latitude: 27.9805, longitude: 86.9215, altitude: 7906 },
+        elevation: 7906,
+        distanceFromStart: 9.4,
+        description: 'The Death Zone launch point.',
+      },
+      {
+        id: 'ev-summit',
+        name: 'Everest Summit',
+        type: 'summit',
+        coordinate: { latitude: 27.9881, longitude: 86.925, altitude: 8848 },
+        elevation: 8848,
+        distanceFromStart: 10.2,
+        description: 'The highest point on Earth.',
+      },
+    ],
+    elevationProfile: [5364, 6065, 6400, 7300, 7906, 8848],
   },
   {
+    id: 'k2-8611',
     name: 'K2',
+    region: 'Karakoram',
+    country: 'Pakistan/China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 18.2,
+    elevationGain: 3461,
+    elevationLoss: 3461,
+    maxElevation: 8611,
+    minElevation: 5150,
+    estimatedDuration: 12000,
+    rating: 4.9,
+    reviewCount: 850,
     latitude: 35.8808,
     longitude: 76.5155,
     altitude: 8611,
-    region: 'Karakoram',
-    country: 'Pakistan/China',
     description: 'Second highest and most dangerous mountain.',
-    track: [
-      { latitude: 35.845, longitude: 76.51 }, // Base Camp
-      { latitude: 35.855, longitude: 76.512 }, // Camp 1
-      { latitude: 35.865, longitude: 76.513 }, // Camp 2
-      { latitude: 35.875, longitude: 76.5145 }, // Camp 4
-      { latitude: 35.8808, longitude: 76.5155 }, // Summit
+    coordinates: [
+      { latitude: 35.845, longitude: 76.51, altitude: 5150 },
+      { latitude: 35.855, longitude: 76.512, altitude: 6050 },
+      { latitude: 35.865, longitude: 76.513, altitude: 6700 },
+      { latitude: 35.87, longitude: 76.514, altitude: 7300 },
+      { latitude: 35.875, longitude: 76.5145, altitude: 7950 },
+      { latitude: 35.8808, longitude: 76.5155, altitude: 8611 },
     ],
-    baseCamp: { latitude: 35.845, longitude: 76.51, altitude: '5,150m' },
+    waypoints: [
+      {
+        id: 'k2-bc',
+        name: 'Base Camp',
+        type: 'start',
+        coordinate: { latitude: 35.845, longitude: 76.51, altitude: 5150 },
+        elevation: 5150,
+        distanceFromStart: 0,
+        description: 'Godwin-Austen Glacier base.',
+      },
+      {
+        id: 'k2-c1',
+        name: 'Camp 1',
+        type: 'waypoint',
+        coordinate: { latitude: 35.855, longitude: 76.512, altitude: 6050 },
+        elevation: 6050,
+        distanceFromStart: 3.5,
+        description: 'Start of the Abruzzi Spur.',
+      },
+      {
+        id: 'k2-c2',
+        name: 'House Chimney',
+        type: 'waypoint',
+        coordinate: { latitude: 35.865, longitude: 76.513, altitude: 6700 },
+        elevation: 6700,
+        distanceFromStart: 5.2,
+        description: 'Famous technical rock climbing section.',
+      },
+      {
+        id: 'k2-c3',
+        name: 'Camp 3',
+        type: 'waypoint',
+        coordinate: { latitude: 35.87, longitude: 76.514, altitude: 7300 },
+        elevation: 7300,
+        distanceFromStart: 6.8,
+        description: 'Black Pyramid exit point.',
+      },
+      {
+        id: 'k2-c4',
+        name: 'Camp 4 (Shoulder)',
+        type: 'waypoint',
+        coordinate: { latitude: 35.875, longitude: 76.5145, altitude: 7950 },
+        elevation: 7950,
+        distanceFromStart: 8.1,
+        description: 'Final stop before the Bottleneck.',
+      },
+      {
+        id: 'k2-summit',
+        name: 'K2 Summit',
+        type: 'summit',
+        coordinate: { latitude: 35.8808, longitude: 76.5155, altitude: 8611 },
+        elevation: 8611,
+        distanceFromStart: 9.1,
+        description: 'The peak of the Savage Mountain.',
+      },
+    ],
+    elevationProfile: [5150, 6050, 6700, 7300, 7950, 8611],
   },
   {
-    name: 'Kangchenjunga',
-    latitude: 27.7025,
-    longitude: 88.1475,
-    altitude: 8586,
-    region: 'Himalayas',
-    country: 'Nepal/India',
-    description: 'Third highest peak in the world.',
-    track: [
-      { latitude: 27.68, longitude: 88.12 },
-      { latitude: 27.69, longitude: 88.135 },
-      { latitude: 27.7025, longitude: 88.1475 },
-    ],
-    baseCamp: { latitude: 27.68, longitude: 88.12, altitude: '5,475m' },
-  },
-  {
-    name: 'Lhotse',
-    latitude: 27.9617,
-    longitude: 86.933,
-    altitude: 8516,
-    region: 'Himalayas',
-    country: 'Nepal',
-    description: 'Connected to Everest via South Col.',
-    track: [
-      { latitude: 27.973, longitude: 86.915 }, // Shared route with Everest Camp 3
-      { latitude: 27.9617, longitude: 86.933 },
-    ],
-    baseCamp: { latitude: 27.973, longitude: 86.915, altitude: '7,100m' },
-  },
-  {
-    name: 'Makalu',
-    latitude: 27.8897,
-    longitude: 87.0883,
-    altitude: 8485,
-    region: 'Himalayas',
-    country: 'Nepal/China',
-    description: 'Fifth highest mountain in the world.',
-    track: [
-      { latitude: 27.86, longitude: 87.05 },
-      { latitude: 27.8897, longitude: 87.0883 },
-    ],
-    baseCamp: { latitude: 27.86, longitude: 87.05, altitude: '5,700m' },
-  },
-  {
-    name: 'Cho Oyu',
-    latitude: 28.0942,
-    longitude: 86.6608,
-    altitude: 8188,
-    region: 'Himalayas',
-    country: 'Nepal/China',
-    description: 'One of the easiest 8000m peaks.',
-    track: [
-      { latitude: 28.11, longitude: 86.64 },
-      { latitude: 28.0942, longitude: 86.6608 },
-    ],
-    baseCamp: { latitude: 28.11, longitude: 86.64, altitude: '5,700m' },
-  },
-  {
-    name: 'Dhaulagiri I',
-    latitude: 28.6966,
-    longitude: 83.487,
-    altitude: 8167,
-    region: 'Himalayas',
-    country: 'Nepal',
-    description: 'Seventh highest peak in the world.',
-    track: [
-      { latitude: 28.67, longitude: 83.46 },
-      { latitude: 28.6966, longitude: 83.487 },
-    ],
-    baseCamp: { latitude: 28.67, longitude: 83.46, altitude: '4,740m' },
-  },
-  {
-    name: 'Manaslu',
-    latitude: 28.5497,
-    longitude: 84.5597,
-    altitude: 8163,
-    region: 'Himalayas',
-    country: 'Nepal',
-    description: 'Mountain of the Spirit.',
-    track: [
-      { latitude: 28.52, longitude: 84.53 },
-      { latitude: 28.5497, longitude: 84.5597 },
-    ],
-    baseCamp: { latitude: 28.52, longitude: 84.53, altitude: '4,800m' },
-  },
-  {
-    name: 'Nanga Parbat',
-    latitude: 35.2372,
-    longitude: 74.5892,
-    altitude: 8126,
-    region: 'Himalayas',
-    country: 'Pakistan',
-    description: 'Killer Mountain due to high fatality rate.',
-    track: [
-      { latitude: 35.21, longitude: 74.56 },
-      { latitude: 35.2372, longitude: 74.5892 },
-    ],
-    baseCamp: { latitude: 35.21, longitude: 74.56, altitude: '3,850m' },
-  },
-  {
-    name: 'Annapurna I',
-    latitude: 28.5961,
-    longitude: 83.8203,
-    altitude: 8091,
-    region: 'Himalayas',
-    country: 'Nepal',
-    description: 'One of the most dangerous mountains.',
-    track: [
-      { latitude: 28.57, longitude: 83.8 },
-      { latitude: 28.5961, longitude: 83.8203 },
-    ],
-    baseCamp: { latitude: 28.57, longitude: 83.8, altitude: '4,130m' },
-  },
-  {
-    name: 'Gasherbrum I',
-    latitude: 35.7245,
-    longitude: 76.6965,
-    altitude: 8080,
-    region: 'Karakoram',
-    country: 'Pakistan/China',
-    description: 'Hidden Peak.',
-    track: [
-      { latitude: 35.7, longitude: 76.67 },
-      { latitude: 35.7245, longitude: 76.6965 },
-    ],
-    baseCamp: { latitude: 35.7, longitude: 76.67, altitude: '5,100m' },
-  },
-  {
-    name: 'Broad Peak',
-    latitude: 35.8122,
-    longitude: 76.5651,
-    altitude: 8051,
-    region: 'Karakoram',
-    country: 'Pakistan/China',
-    description: 'Near K2.',
-    track: [
-      { latitude: 35.79, longitude: 76.54 },
-      { latitude: 35.8122, longitude: 76.5651 },
-    ],
-    baseCamp: { latitude: 35.79, longitude: 76.54, altitude: '4,900m' },
-  },
-  {
-    name: 'Gasherbrum II',
-    latitude: 35.7583,
-    longitude: 76.6533,
-    altitude: 8035,
-    region: 'Karakoram',
-    country: 'Pakistan/China',
-    description: 'More accessible 8000m peak.',
-    track: [
-      { latitude: 35.73, longitude: 76.63 },
-      { latitude: 35.7583, longitude: 76.6533 },
-    ],
-    baseCamp: { latitude: 35.73, longitude: 76.63, altitude: '5,100m' },
-  },
-  {
-    name: 'Shishapangma',
-    latitude: 28.3525,
-    longitude: 85.7792,
-    altitude: 8027,
-    region: 'Tibet',
-    country: 'China',
-    description: 'Lowest 8000m peak.',
-    track: [
-      { latitude: 28.37, longitude: 85.75 },
-      { latitude: 28.3525, longitude: 85.7792 },
-    ],
-    baseCamp: { latitude: 28.37, longitude: 85.75, altitude: '5,000m' },
-  },
-
-  // ======================
-  // 🏔️ Major 7000m Peaks
-  // ======================
-  {
-    name: 'Noshaq',
-    latitude: 36.434,
-    longitude: 71.823,
-    altitude: 7492,
-    region: 'Hindu Kush',
-    country: 'Afghanistan',
-    description: 'Highest mountain in Afghanistan.',
-    track: [
-      { latitude: 36.42, longitude: 71.8 },
-      { latitude: 36.434, longitude: 71.823 },
-    ],
-    baseCamp: { latitude: 36.42, longitude: 71.8, altitude: '4,450m' },
-  },
-  {
-    name: 'Tirich Mir',
-    latitude: 36.255,
-    longitude: 71.841,
-    altitude: 7708,
-    region: 'Hindu Kush',
-    country: 'Pakistan',
-    description: 'Highest peak of Hindu Kush.',
-    track: [
-      { latitude: 36.23, longitude: 71.82 },
-      { latitude: 36.255, longitude: 71.841 },
-    ],
-    baseCamp: { latitude: 36.23, longitude: 71.82, altitude: '4,700m' },
-  },
-  {
-    name: 'Trivor',
-    latitude: 36.086,
-    longitude: 75.175,
-    altitude: 7720,
-    region: 'Karakoram',
-    country: 'Pakistan',
-    description: 'Remote Karakoram peak.',
-    track: [
-      { latitude: 36.06, longitude: 75.15 },
-      { latitude: 36.086, longitude: 75.175 },
-    ],
-    baseCamp: { latitude: 36.06, longitude: 75.15, altitude: '4,800m' },
-  },
-
-  // ======================
-  // 🇮🇷 Iranian Peaks
-  // ======================
-  {
+    id: 'damavand-5610',
     name: 'Damavand',
+    region: 'Alborz',
+    country: 'Iran',
+    difficulty: 'hard',
+    trailType: 'out-and-back',
+    distance: 14.5,
+    elevationGain: 2610,
+    elevationLoss: 2610,
+    maxElevation: 5610,
+    minElevation: 3000,
+    estimatedDuration: 720,
+    rating: 4.8,
+    reviewCount: 3200,
     latitude: 35.951,
     longitude: 52.109,
     altitude: 5610,
-    region: 'Alborz',
-    country: 'Iran',
     description: 'Highest mountain in Iran and Middle East.',
-    track: [
-      { latitude: 35.92, longitude: 52.11 }, // Southern Route Start
-      { latitude: 35.935, longitude: 52.11 }, // Bargah Sevom
-      { latitude: 35.951, longitude: 52.109 }, // Summit
+    coordinates: [
+      { latitude: 35.92, longitude: 52.11, altitude: 3000 },
+      { latitude: 35.93, longitude: 52.112, altitude: 3600 },
+      { latitude: 35.94, longitude: 52.115, altitude: 4200 },
+      { latitude: 35.951, longitude: 52.109, altitude: 5610 },
     ],
-    baseCamp: { latitude: 35.92, longitude: 52.11, altitude: '3,000m' },
+    waypoints: [
+      {
+        id: 'dv-base',
+        name: 'Polour Base',
+        type: 'start',
+        coordinate: { latitude: 35.92, longitude: 52.11, altitude: 3000 },
+        elevation: 3000,
+        distanceFromStart: 0,
+        description: 'Initial gathering point.',
+      },
+      {
+        id: 'dv-c1',
+        name: 'Gousfand Sara',
+        type: 'waypoint',
+        coordinate: { latitude: 35.93, longitude: 52.112, altitude: 3600 },
+        elevation: 3600,
+        distanceFromStart: 3.2,
+        description: 'The Mosque and 4x4 parking point.',
+      },
+      {
+        id: 'dv-c2',
+        name: 'Bargah Sevom',
+        type: 'waypoint',
+        coordinate: { latitude: 35.94, longitude: 52.115, altitude: 4200 },
+        elevation: 4200,
+        distanceFromStart: 5.1,
+        description: 'The main mountain hut and shelter.',
+      },
+      {
+        id: 'dv-summit',
+        name: 'Damavand Summit',
+        type: 'summit',
+        coordinate: { latitude: 35.951, longitude: 52.109, altitude: 5610 },
+        elevation: 5610,
+        distanceFromStart: 7.2,
+        description: 'Summit with sulfur springs.',
+      },
+    ],
+    elevationProfile: [3000, 3600, 4200, 5610],
   },
   {
-    name: 'Sabalan',
-    latitude: 38.272,
-    longitude: 47.845,
-    altitude: 4811,
-    region: 'Iran',
-    country: 'Iran',
-    description: 'Dormant volcano in northwest Iran.',
-    track: [
-      { latitude: 38.29, longitude: 47.82 },
-      { latitude: 38.272, longitude: 47.845 },
+    name: 'Kangchenjunga',
+    id: 'kang-8586',
+    region: 'Himalayas',
+    country: 'Nepal/India',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 19.0,
+    elevationGain: 3111,
+    elevationLoss: 3111,
+    maxElevation: 8586,
+    minElevation: 5475,
+    estimatedDuration: 13000,
+    rating: 4.8,
+    reviewCount: 420,
+    latitude: 27.7025, //
+    longitude: 88.1475, //
+    altitude: 8586, //
+    description: 'Third highest peak in the world.', //
+    coordinates: [
+      { latitude: 27.68, longitude: 88.12, altitude: 5475 },
+      { latitude: 27.7025, longitude: 88.1475, altitude: 8586 },
     ],
-    baseCamp: { latitude: 38.29, longitude: 47.82, altitude: '3,600m' },
+    waypoints: [],
+    elevationProfile: [5475, 7000, 8586],
   },
   {
-    name: 'Alam Kuh',
-    latitude: 36.384,
-    longitude: 50.983,
-    altitude: 4850,
-    region: 'Alborz',
-    country: 'Iran',
-    description: 'Technical climbing peak in Iran.',
-    track: [
-      { latitude: 36.36, longitude: 50.96 },
-      { latitude: 36.384, longitude: 50.983 },
+    name: 'Lhotse',
+    id: 'lhotse-8516',
+    region: 'Himalayas',
+    country: 'Nepal',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 15.0,
+    elevationGain: 1416,
+    elevationLoss: 1416,
+    maxElevation: 8516,
+    minElevation: 7100,
+    estimatedDuration: 10000,
+    rating: 4.7,
+    reviewCount: 310,
+    latitude: 27.9617, //
+    longitude: 86.933, //
+    altitude: 8516, //
+    description: 'Connected to Everest via South Col.', //
+    coordinates: [
+      { latitude: 27.973, longitude: 86.915, altitude: 7100 },
+      { latitude: 27.9617, longitude: 86.933, altitude: 8516 },
     ],
-    baseCamp: { latitude: 36.36, longitude: 50.96, altitude: '3,800m' },
+    waypoints: [],
+    elevationProfile: [7100, 7800, 8516],
+  },
+  {
+    name: 'Makalu',
+    id: 'makalu-8485',
+    region: 'Himalayas',
+    country: 'Nepal/China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 17.5,
+    elevationGain: 2785,
+    elevationLoss: 2785,
+    maxElevation: 8485,
+    minElevation: 5700,
+    estimatedDuration: 11000,
+    rating: 4.8,
+    reviewCount: 290,
+    latitude: 27.8897, //
+    longitude: 87.0883, //
+    altitude: 8485, //
+    description: 'Fifth highest mountain in the world.', //
+    coordinates: [
+      { latitude: 27.86, longitude: 87.05, altitude: 5700 },
+      { latitude: 27.8897, longitude: 87.0883, altitude: 8485 },
+    ],
+    waypoints: [],
+    elevationProfile: [5700, 7100, 8485],
+  },
+  {
+    name: 'Cho Oyu',
+    id: 'cho-oyu-8188',
+    region: 'Himalayas',
+    country: 'Nepal/China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 14.0,
+    elevationGain: 2488,
+    elevationLoss: 2488,
+    maxElevation: 8188,
+    minElevation: 5700,
+    estimatedDuration: 9000,
+    rating: 4.6,
+    reviewCount: 540,
+    latitude: 28.0942, //
+    longitude: 86.6608, //
+    altitude: 8188, //
+    description: 'One of the easiest 8000m peaks.', //
+    coordinates: [
+      { latitude: 28.11, longitude: 86.64, altitude: 5700 },
+      { latitude: 28.0942, longitude: 86.6608, altitude: 8188 },
+    ],
+    waypoints: [],
+    elevationProfile: [5700, 7000, 8188],
+  },
+  {
+    name: 'Dhaulagiri I',
+    id: 'dhau-8167',
+    region: 'Himalayas',
+    country: 'Nepal',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 16.0,
+    elevationGain: 3427,
+    elevationLoss: 3427,
+    maxElevation: 8167,
+    minElevation: 4740,
+    estimatedDuration: 10500,
+    rating: 4.7,
+    reviewCount: 180,
+    latitude: 28.6966, //
+    longitude: 83.487, //
+    altitude: 8167, //
+    description: 'Seventh highest peak in the world.', //
+    coordinates: [
+      { latitude: 28.67, longitude: 83.46, altitude: 4740 },
+      { latitude: 28.6966, longitude: 83.487, altitude: 8167 },
+    ],
+    waypoints: [],
+    elevationProfile: [4740, 6500, 8167],
+  },
+  {
+    name: 'Manaslu',
+    id: 'mana-8163',
+    region: 'Himalayas',
+    country: 'Nepal',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 15.5,
+    elevationGain: 3363,
+    elevationLoss: 3363,
+    maxElevation: 8163,
+    minElevation: 4800,
+    estimatedDuration: 10000,
+    rating: 4.8,
+    reviewCount: 620,
+    latitude: 28.5497, //
+    longitude: 84.5597, //
+    altitude: 8163, //
+    description: 'Mountain of the Spirit.', //
+    coordinates: [
+      { latitude: 28.52, longitude: 84.53, altitude: 4800 },
+      { latitude: 28.5497, longitude: 84.5597, altitude: 8163 },
+    ],
+    waypoints: [],
+    elevationProfile: [4800, 6500, 8163],
+  },
+  {
+    name: 'Nanga Parbat',
+    id: 'nanga-8126',
+    region: 'Himalayas',
+    country: 'Pakistan',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 18.0,
+    elevationGain: 4276,
+    elevationLoss: 4276,
+    maxElevation: 8126,
+    minElevation: 3850,
+    estimatedDuration: 13500,
+    rating: 4.9,
+    reviewCount: 210,
+    latitude: 35.2372, //
+    longitude: 74.5892, //
+    altitude: 8126, //
+    description: 'Killer Mountain due to high fatality rate.', //
+    coordinates: [
+      { latitude: 35.21, longitude: 74.56, altitude: 3850 },
+      { latitude: 35.2372, longitude: 74.5892, altitude: 8126 },
+    ],
+    waypoints: [],
+    elevationProfile: [3850, 6000, 8126],
+  },
+  {
+    name: 'Annapurna I',
+    id: 'anna-8091',
+    region: 'Himalayas',
+    country: 'Nepal',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 15.0,
+    elevationGain: 3961,
+    elevationLoss: 3961,
+    maxElevation: 8091,
+    minElevation: 4130,
+    estimatedDuration: 13000,
+    rating: 4.5,
+    reviewCount: 150,
+    latitude: 28.5961, //
+    longitude: 83.8203, //
+    altitude: 8091, //
+    description: 'One of the most dangerous mountains.', //
+    coordinates: [
+      { latitude: 28.57, longitude: 83.8, altitude: 4130 },
+      { latitude: 28.5961, longitude: 83.8203, altitude: 8091 },
+    ],
+    waypoints: [],
+    elevationProfile: [4130, 6000, 8091],
+  },
+  {
+    name: 'Gasherbrum I',
+    id: 'g1-8080',
+    region: 'Karakoram',
+    country: 'Pakistan/China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 16.5,
+    elevationGain: 2980,
+    elevationLoss: 2980,
+    maxElevation: 8080,
+    minElevation: 5100,
+    estimatedDuration: 11500,
+    rating: 4.7,
+    reviewCount: 95,
+    latitude: 35.7245, //
+    longitude: 76.6965, //
+    altitude: 8080, //
+    description: 'Hidden Peak.', //
+    coordinates: [
+      { latitude: 35.7, longitude: 76.67, altitude: 5100 },
+      { latitude: 35.7245, longitude: 76.6965, altitude: 8080 },
+    ],
+    waypoints: [],
+    elevationProfile: [5100, 6500, 8080],
+  },
+  {
+    name: 'Broad Peak',
+    id: 'broad-8051',
+    region: 'Karakoram',
+    country: 'Pakistan/China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 15.0,
+    elevationGain: 3151,
+    elevationLoss: 3151,
+    maxElevation: 8051,
+    minElevation: 4900,
+    estimatedDuration: 11000,
+    rating: 4.7,
+    reviewCount: 140,
+    latitude: 35.8122, //
+    longitude: 76.5651, //
+    altitude: 8051, //
+    description: 'Near K2.', //
+    coordinates: [
+      { latitude: 35.79, longitude: 76.54, altitude: 4900 },
+      { latitude: 35.8122, longitude: 76.5651, altitude: 8051 },
+    ],
+    waypoints: [],
+    elevationProfile: [4900, 6500, 8051],
+  },
+  {
+    name: 'Gasherbrum II',
+    id: 'g2-8035',
+    region: 'Karakoram',
+    country: 'Pakistan/China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 14.5,
+    elevationGain: 2935,
+    elevationLoss: 2935,
+    maxElevation: 8035,
+    minElevation: 5100,
+    estimatedDuration: 9500,
+    rating: 4.8,
+    reviewCount: 220,
+    latitude: 35.7583, //
+    longitude: 76.6533, //
+    altitude: 8035, //
+    description: 'More accessible 8000m peak.', //
+    coordinates: [
+      { latitude: 35.73, longitude: 76.63, altitude: 5100 },
+      { latitude: 35.7583, longitude: 76.6533, altitude: 8035 },
+    ],
+    waypoints: [],
+    elevationProfile: [5100, 6500, 8035],
+  },
+  {
+    name: 'Shishapangma',
+    id: 'shisha-8027',
+    region: 'Tibet',
+    country: 'China',
+    difficulty: 'expert',
+    trailType: 'out-and-back',
+    distance: 13.5,
+    elevationGain: 3027,
+    elevationLoss: 3027,
+    maxElevation: 8027,
+    minElevation: 5000,
+    estimatedDuration: 9000,
+    rating: 4.5,
+    reviewCount: 110,
+    latitude: 28.3525, //
+    longitude: 85.7792, //
+    altitude: 8027, //
+    description: 'Lowest 8000m peak.', //
+    coordinates: [
+      { latitude: 28.37, longitude: 85.75, altitude: 5000 },
+      { latitude: 28.3525, longitude: 85.7792, altitude: 8027 },
+    ],
+    waypoints: [],
+    elevationProfile: [5000, 6500, 8027],
   },
 ];

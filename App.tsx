@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import ChatScreenPage from './src/Screens/Chat';
 import MapScreenPage from './src/Screens/Map';
@@ -10,13 +11,15 @@ const App = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Chat" component={ChatScreenPage} />
-        <Stack.Screen name="Map" component={MapScreenPage} />
-        <Stack.Screen name="Track" component={TrackScreenPage} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Chat" component={ChatScreenPage} />
+          <Stack.Screen name="Map" component={MapScreenPage} />
+          <Stack.Screen name="Track" component={TrackScreenPage} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 };
 
